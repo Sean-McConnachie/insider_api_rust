@@ -1,0 +1,8 @@
+[workspace]
+
+members = [
+    "config_handler",
+    "request_handler",
+    "api",
+    "scraper"
+]
