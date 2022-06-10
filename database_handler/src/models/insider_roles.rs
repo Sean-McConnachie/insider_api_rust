@@ -7,7 +7,7 @@ use crate::schema::insiderroles;
 use crate::models::stock_data::StockData;
 use crate::models::all_insiders::AllInsiders;
 
-#[derive(Identifiable, Associations, Serialize, Deserialize, Queryable, Insertable)]
+#[derive(Identifiable, Associations, Serialize, Deserialize, Queryable, Insertable, Debug)]
 #[table_name = "insiderroles"]
 #[belongs_to(AllInsiders, foreign_key = "insider_cik")]
 #[belongs_to(StockData, foreign_key = "company_cik")]

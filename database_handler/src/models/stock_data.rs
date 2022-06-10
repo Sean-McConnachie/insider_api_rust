@@ -5,7 +5,7 @@ use crate::database;
 use crate::database_errors::DbError;
 use crate::schema::stockdata;
 
-#[derive(Identifiable, Serialize, Deserialize, Queryable, Insertable)]
+#[derive(Identifiable, Serialize, Deserialize, Queryable, Insertable, Debug)]
 #[table_name = "stockdata"]
 #[primary_key(company_cik)]
 pub struct StockData {
@@ -18,14 +18,15 @@ pub struct StockData {
 }
 
 impl StockData {
-    /*
-    pub fn find_all() -> Result<Vec<Self>, DbError> {
+    pub fn insert_many(data: Vec<StockData>) -> Result<usize, DbError> {
         let conn = database::connection()?;
-
-        let users = user::table
-            .load::<User>(&conn)?;
-
-        Ok(users)
+        let u = diesel::insert_into(stockdata::table)
+            .values(&data)
+            .execute(&conn)?;
+        Ok(u)
     }
-     */
+
+    pub fn insert(data: StockData) -> Result<usize, DbError> {
+        StockData::insert_many(vec![data])
+    }
 }

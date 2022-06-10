@@ -6,7 +6,7 @@ use crate::database_errors::DbError;
 use crate::schema::ndholdings;
 use crate::models::all_filings::AllFilings;
 
-#[derive(Identifiable, Associations, Serialize, Deserialize, Queryable, Insertable)]
+#[derive(Identifiable, Associations, Serialize, Deserialize, Queryable, Insertable, Debug)]
 #[table_name = "ndholdings"]
 #[belongs_to(AllFilings, foreign_key = "accession_number")]
 pub struct NdHoldings {

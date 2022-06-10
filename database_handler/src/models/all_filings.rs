@@ -6,7 +6,7 @@ use crate::database_errors::DbError;
 use crate::schema::allfilings;
 use crate::models::stock_data::StockData;
 
-#[derive(Identifiable, Associations, Serialize, Deserialize, Queryable, Insertable)]
+#[derive(Identifiable, Associations, Serialize, Deserialize, Queryable, Insertable, Debug)]
 #[table_name = "allfilings"]
 #[primary_key(accession_number)]
 #[belongs_to(StockData, foreign_key = "company_cik")]

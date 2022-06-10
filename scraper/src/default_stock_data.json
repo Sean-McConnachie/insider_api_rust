@@ -1,0 +1,268 @@
+{
+  "defaults": [
+    {
+      "ticker": "AMC",
+      "exchange": "NYSE",
+      "short_name": "AMC",
+      "full_name": "AMC Entertainment Holdings Inc",
+      "isin": "US00165C1045",
+      "company_cik": 1411579
+    },
+    {
+      "ticker": "BABA",
+      "exchange": "NYSE",
+      "short_name": "Alibaba",
+      "full_name": "Alibaba Group Holding Limited",
+      "isin": "US01609W1027",
+      "company_cik": 1577552
+    },
+    {
+      "ticker": "BB",
+      "exchange": "NYSE",
+      "short_name": "BlackBerry",
+      "full_name": "BlackBerry Limited",
+      "isin": "CA09228F1036",
+      "company_cik": 1070235
+    },
+    {
+      "ticker": "GME",
+      "exchange": "NYSE",
+      "short_name": "GameStop",
+      "full_name": "GameStop Corp",
+      "isin": "US36467W1099",
+      "company_cik": 1326380
+    },
+    {
+      "ticker": "NIO",
+      "exchange": "NYSE",
+      "short_name": "NIO",
+      "full_name": "NIO Inc",
+      "isin": "US62914V1061",
+      "company_cik": 1736541
+    },
+    {
+      "ticker": "NOK",
+      "exchange": "NYSE",
+      "short_name": "Nokia",
+      "full_name": "Nokia Corporation",
+      "isin": "US6549022043",
+      "company_cik": 924613
+    },
+    {
+      "ticker": "PFE",
+      "exchange": "NYSE",
+      "short_name": "Pfizer",
+      "full_name": "Pfizer Inc",
+      "isin": "US7170811035",
+      "company_cik": 78003
+    },
+    {
+      "ticker": "SQ",
+      "exchange": "NYSE",
+      "short_name": "Block",
+      "full_name": "Block Inc.",
+      "isin": "US8522341036",
+      "company_cik": 1512673
+    },
+    {
+      "ticker": "TSM",
+      "exchange": "NYSE",
+      "short_name": "Taiwan",
+      "full_name": "Taiwan Semiconductor Manufacturing Company Limited",
+      "isin": "US8740391003",
+      "company_cik": 1046179
+    },
+    {
+      "ticker": "TWTR",
+      "exchange": "NYSE",
+      "short_name": "Twitter",
+      "full_name": "Twitter Inc",
+      "isin": "US90184L1026",
+      "company_cik": 1418091
+    },
+    {
+      "ticker": "UBER",
+      "exchange": "NYSE",
+      "short_name": "Uber",
+      "full_name": "Uber Technologies Inc",
+      "isin": "US90353T1007",
+      "company_cik": 1543151
+    },
+    {
+      "ticker": "AAPL",
+      "exchange": "NASDAQ",
+      "short_name": "Apple",
+      "full_name": "Apple Inc",
+      "isin": "US0378331005",
+      "company_cik": 320193
+    },
+    {
+      "ticker": "ABNB",
+      "exchange": "NASDAQ",
+      "short_name": "Airbnb",
+      "full_name": "Airbnb Inc",
+      "isin": "US0090661010",
+      "company_cik": 1559720
+    },
+    {
+      "ticker": "ACB",
+      "exchange": "NASDAQ",
+      "short_name": "Aurora",
+      "full_name": "Aurora Cannabis Inc",
+      "isin": "CA05156X8843",
+      "company_cik": 1683541
+    },
+    {
+      "ticker": "AMD",
+      "exchange": "NASDAQ",
+      "short_name": "Advanced",
+      "full_name": "Advanced Micro Devices Inc",
+      "isin": "US0079031078",
+      "company_cik": 2488
+    },
+    {
+      "ticker": "AMZN",
+      "exchange": "NASDAQ",
+      "short_name": "Amazon.com",
+      "full_name": "Amazon.com Inc",
+      "isin": "US0231351067",
+      "company_cik": 1018724
+    },
+    {
+      "ticker": "BILI",
+      "exchange": "NASDAQ",
+      "short_name": "Bilibili",
+      "full_name": "Bilibili Inc",
+      "isin": "US0900401060",
+      "company_cik": 1723690
+    },
+    {
+      "ticker": "BNTX",
+      "exchange": "NASDAQ",
+      "short_name": "BioNTech",
+      "full_name": "BioNTech SE",
+      "isin": "US09075V1026",
+      "company_cik": 1776985
+    },
+    {
+      "ticker": "BYND",
+      "exchange": "NASDAQ",
+      "short_name": "Beyond",
+      "full_name": "Beyond Meat Inc",
+      "isin": "US08862E1091",
+      "company_cik": 1655210
+    },
+    {
+      "ticker": "CGC",
+      "exchange": "NASDAQ",
+      "short_name": "Canopy",
+      "full_name": "Canopy Growth Corporation",
+      "isin": "CA1380351009",
+      "company_cik": 1737927
+    },
+    {
+      "ticker": "CRON",
+      "exchange": "NASDAQ",
+      "short_name": "Cronos",
+      "full_name": "Cronos Group Inc",
+      "isin": "CA22717L1013",
+      "company_cik": 1656472
+    },
+    {
+      "ticker": "DKNG",
+      "exchange": "NASDAQ",
+      "short_name": "DraftKings",
+      "full_name": "DraftKings Inc",
+      "isin": "US26142R1041",
+      "company_cik": 1772757
+    },
+    {
+      "ticker": "FB",
+      "exchange": "NASDAQ",
+      "short_name": "Meta",
+      "full_name": "Meta Platforms Inc.",
+      "isin": "US30303M1027",
+      "company_cik": 1326801
+    },
+    {
+      "ticker": "GOOGL",
+      "exchange": "NASDAQ",
+      "short_name": "Alphabet",
+      "full_name": "Alphabet Inc",
+      "isin": "US02079K3059",
+      "company_cik": 1652044
+    },
+    {
+      "ticker": "MRNA",
+      "exchange": "NASDAQ",
+      "short_name": "Moderna",
+      "full_name": "Moderna Inc",
+      "isin": "US60770K1079",
+      "company_cik": 1682852
+    },
+    {
+      "ticker": "MSTR",
+      "exchange": "NASDAQ",
+      "short_name": "MicroStrategy",
+      "full_name": "MicroStrategy Incorporated",
+      "isin": "US5949724083",
+      "company_cik": 1050446
+    },
+    {
+      "ticker": "NFLX",
+      "exchange": "NASDAQ",
+      "short_name": "Netflix",
+      "full_name": "Netflix Inc",
+      "isin": "US64110L1061",
+      "company_cik": 1065280
+    },
+    {
+      "ticker": "NVDA",
+      "exchange": "NASDAQ",
+      "short_name": "NVIDIA",
+      "full_name": "NVIDIA Corporation",
+      "isin": "US67066G1040",
+      "company_cik": 1045810
+    },
+    {
+      "ticker": "PENN",
+      "exchange": "NASDAQ",
+      "short_name": "Penn",
+      "full_name": "Penn National Gaming Inc",
+      "isin": "US7075691094",
+      "company_cik": 921738
+    },
+    {
+      "ticker": "PYPL",
+      "exchange": "NASDAQ",
+      "short_name": "PayPal",
+      "full_name": "PayPal Holdings Inc",
+      "isin": "US70450Y1038",
+      "company_cik": 1633917
+    },
+    {
+      "ticker": "TLRY",
+      "exchange": "NASDAQ",
+      "short_name": "Tilray",
+      "full_name": "Tilray Inc",
+      "isin": "US88688T1007",
+      "company_cik": 1731348
+    },
+    {
+      "ticker": "TSLA",
+      "exchange": "NASDAQ",
+      "short_name": "Tesla",
+      "full_name": "Tesla Inc",
+      "isin": "US88160R1014",
+      "company_cik": 1318605
+    },
+    {
+      "ticker": "ZM",
+      "exchange": "NASDAQ",
+      "short_name": "Zoom",
+      "full_name": "Zoom Video Communications Inc",
+      "isin": "US98980L1017",
+      "company_cik": 1585521
+    }
+  ]
+}

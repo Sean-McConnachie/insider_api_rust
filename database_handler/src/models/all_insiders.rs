@@ -5,7 +5,7 @@ use crate::database;
 use crate::database_errors::DbError;
 use crate::schema::allinsiders;
 
-#[derive(Identifiable, Serialize, Deserialize, Queryable, Insertable)]
+#[derive(Identifiable, Serialize, Deserialize, Queryable, Insertable, Debug)]
 #[table_name = "allinsiders"]
 #[primary_key(insider_cik)]
 pub struct AllInsiders {

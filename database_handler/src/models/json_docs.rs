@@ -6,7 +6,7 @@ use crate::database_errors::DbError;
 use crate::schema::jsondocs;
 use crate::models::stock_data::StockData;
 
-#[derive(Identifiable, Associations, Queryable, Insertable, Serialize, Deserialize)]
+#[derive(Identifiable, Associations, Queryable, Insertable, Serialize, Deserialize, Debug)]
 #[table_name = "jsondocs"]
 #[belongs_to(StockData, foreign_key = "company_cik")]
 pub struct JsonDocs {
