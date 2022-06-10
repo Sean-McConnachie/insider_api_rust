@@ -1,0 +1,5 @@
+Transaction thread:
+https://users.rust-lang.org/t/actix-diesel-using-a-transaction/22108/4
+
+Transactions also found in the following example:
+https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/all_about_inserts/src/lib.rs

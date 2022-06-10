@@ -1,11 +1,10 @@
+use actix_web::{get, HttpResponse, Responder, web};
+use actix_web::web::ServiceConfig;
+
 // Our main api endpoints
 use crate::api_routes::companies;
 use crate::api_routes::filings;
 use crate::api_routes::insiders;
-
-use actix_web::web::ServiceConfig;
-use actix_web::{get, HttpResponse, Responder, web};
-
 
 #[get("/")]
 async fn index() -> impl Responder {

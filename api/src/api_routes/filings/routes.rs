@@ -1,6 +1,5 @@
-use actix_web::{HttpResponse, Responder, get};
+use actix_web::{get, HttpResponse, Responder};
 use actix_web::web::ServiceConfig;
-
 
 #[get("/")]
 async fn index() -> impl Responder {

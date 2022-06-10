@@ -4,5 +4,6 @@ members = [
     "shared_lib",
     "request_handler",
     "api",
-    "scraper"
+    "scraper",
+    "database_handler"
 ]

@@ -1,16 +1,14 @@
 #[macro_use]
 extern crate log;
-#[macro_use]
-extern crate diesel;
 
-use listenfd::ListenFd;
 use actix_web::{App, HttpServer, middleware::Logger, web};
+use listenfd::ListenFd;
 
 use shared_lib::logger::build_default_logger;
 
+mod api_errors;
 mod settings;
 mod api_routes;
-mod database;
 
 
 #[actix_web::main]
