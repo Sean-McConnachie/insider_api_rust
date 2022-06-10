@@ -1,0 +1,12 @@
+diesel migration --database-url postgres://postgres:12341234@127.0.0.1:5432/insider_api_rust generate stock_data
+diesel migration --database-url postgres://postgres:12341234@127.0.0.1:5432/insider_api_rust generate json_docs
+diesel migration --database-url postgres://postgres:12341234@127.0.0.1:5432/insider_api_rust generate all_filings
+diesel migration --database-url postgres://postgres:12341234@127.0.0.1:5432/insider_api_rust generate all_insiders
+diesel migration --database-url postgres://postgres:12341234@127.0.0.1:5432/insider_api_rust generate insider_roles
+diesel migration --database-url postgres://postgres:12341234@127.0.0.1:5432/insider_api_rust generate d_holdings
+diesel migration --database-url postgres://postgres:12341234@127.0.0.1:5432/insider_api_rust generate d_transactions
+diesel migration --database-url postgres://postgres:12341234@127.0.0.1:5432/insider_api_rust generate nd_holdings
+diesel migration --database-url postgres://postgres:12341234@127.0.0.1:5432/insider_api_rust generate nd_transactions
+diesel migration --database-url postgres://postgres:12341234@127.0.0.1:5432/insider_api_rust generate filings_other
+
+diesel migration --database-url postgres://postgres:12341234@127.0.0.1:5432/insider_api_rust run

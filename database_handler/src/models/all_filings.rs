@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 use crate::database;
 use crate::database_errors::DbError;
 use crate::schema::allfilings;
+use crate::models::stock_data::StockData;
 
 #[derive(Identifiable, Associations, Serialize, Deserialize, Queryable, Insertable)]
 #[table_name = "allfilings"]
@@ -14,7 +15,7 @@ pub struct AllFilings {
     pub acceptance_datetime: i64,
     pub filing_date: i64,
     pub report_date: i64,
-    pub size: i64,
+    pub size: i32,
     pub company_cik: i32,
     pub form_link: Option<String>,
     pub index_link: Option<String>,

@@ -4,6 +4,8 @@ use serde::{Deserialize, Serialize};
 use crate::database;
 use crate::database_errors::DbError;
 use crate::schema::insiderroles;
+use crate::models::stock_data::StockData;
+use crate::models::all_insiders::AllInsiders;
 
 #[derive(Identifiable, Associations, Serialize, Deserialize, Queryable, Insertable)]
 #[table_name = "insiderroles"]

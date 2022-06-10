@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 use crate::database;
 use crate::database_errors::DbError;
 use crate::schema::ndtransactions;
+use crate::models::all_filings::AllFilings;
 
 #[derive(Identifiable, Associations, Serialize, Deserialize, Queryable, Insertable)]
 #[table_name = "ndtransactions"]
