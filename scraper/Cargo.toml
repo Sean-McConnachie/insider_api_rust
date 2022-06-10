@@ -6,5 +6,5 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-config_handler = { path = "../config_handler" }
+shared_lib = { path = "../shared_lib" }
 request_handler = { path = "../request_handler" }

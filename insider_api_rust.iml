@@ -7,6 +7,7 @@
       <sourceFolder url="file://$MODULE_DIR$/config_handler/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/request_handler/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/scraper/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/shared_lib/src" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />
