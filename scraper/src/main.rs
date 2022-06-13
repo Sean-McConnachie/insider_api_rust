@@ -1,5 +1,7 @@
 #[macro_use]
 extern crate log;
+extern crate core;
+
 
 use std;
 use std::fs;
@@ -9,18 +11,18 @@ use hyper::Client;
 use hyper::client::HttpConnector;
 use hyper_tls::HttpsConnector;
 use serde_json;
+use callbacks::json_requests;
 use database_handler::database_errors::DbError;
 
 use database_handler::models::stock_data::StockData;
 use shared_lib::logger::{build_default_logger, Log};
-use models::serde_models::StockDataVec;
+use models::other_models::StockDataVec;
+use request_handler::{QueueRequest, RequestHandlerError};
 
-mod json_requests;
-mod xml_requests;
-mod rss_requests;
-mod index_requests;
 mod settings;
 mod models;
+mod callbacks;
+mod custom_de_serializers;
 
 
 #[derive(Error, Debug)]
@@ -31,22 +33,23 @@ pub enum InsiderError {
     IoError(#[from] std::io::Error),
     #[error("Serde Error")]
     SerdeError(#[from] serde_json::Error),
-
-    #[error("Internal Json Error")]
-    JsonError(#[from] json_requests::JsonError),
+    #[error("Internal Callback Error")]
+    CallbackErr(#[from] CallbackError),
 }
 
-pub enum CallbackState {
-    JsonRecent,
-    JsonSubsequent,
-    Rss,
-    Index,
-    Xml
+#[derive(Error, Debug)]
+pub enum CallbackError {
+    #[error("Request handler error")]
+    RequestHandlerErr(#[from] RequestHandlerError),
+    #[error("Database error")]
+    DatabaseErr(#[from] DbError),
+    #[error("Serde Error")]
+    SerdeError(#[from] serde_json::Error),
 }
+
 
 struct Insider {
     config: settings::Settings,
-    callback_state: CallbackState,
     https_connector: Client<HttpsConnector<HttpConnector>>
 }
 
@@ -55,7 +58,6 @@ impl Insider {
         Insider {
             config,
             https_connector: Client::builder().build::<_, hyper::Body>(HttpsConnector::new()),
-            callback_state: CallbackState::JsonRecent,
         }
     }
 
@@ -68,11 +70,22 @@ impl Insider {
     }
 
     async fn run(&mut self) -> Result<(), InsiderError> {
-        println!("Running insider");
-        self.run_json().await?;
+        info!("Running insider");
+        match self.run_json().await {
+            Ok(_) => println!("Successfully ran json"),
+            Err(_) => println!("Error running json")
+        }
         Ok(())
     }
 }
+
+
+impl QueueRequest for Insider {
+    fn get_client(&self) -> Client<HttpsConnector<HttpConnector>> {
+        self.https_connector.clone()
+    }
+}
+
 
 #[tokio::main]
 async fn main() -> Result<(), InsiderError> {
@@ -82,7 +95,7 @@ async fn main() -> Result<(), InsiderError> {
     logger.init();
 
     let mut insider = Insider::init(config);
-    // insider.insert_default().expect("Failed to insert default records");
+    //insider.insert_default().expect("Failed to insert default records");
     insider.run().await?;
 
     Ok(())

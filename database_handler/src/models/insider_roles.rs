@@ -12,7 +12,7 @@ use crate::models::all_insiders::AllInsiders;
 #[belongs_to(AllInsiders, foreign_key = "insider_cik")]
 #[belongs_to(StockData, foreign_key = "company_cik")]
 pub struct InsiderRoles {
-    pub id: i32,
+    pub id: Option<i32>,
     pub insider_cik: i32,
     pub company_cik: i32,
     pub director: bool,

@@ -27,7 +27,6 @@ pub fn init() {
     embedded_migrations::run(&conn).unwrap();
 }
 
-pub fn connection() -> Result<DbConnection, DbError> {
+pub fn connection() -> Result<DbConnection, r2d2::Error> {
     POOL.get()
-        .map_err(|e| DbError::ConnectionError(e.to_string()))
 }

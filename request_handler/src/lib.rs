@@ -1,7 +1,8 @@
 #[macro_use]
 extern crate log;
 
-use std::fmt::Debug;
+use std::any::Any;
+use std::fmt::{Debug, Error};
 use std::ops::Deref;
 use async_trait::async_trait;
 use hyper;
@@ -17,6 +18,7 @@ use futures::channel::oneshot::{Receiver, Sender};
 use futures::stream::{self, StreamExt};
 use hyper::header::HeaderName;
 use url::Url;
+use anyhow;
 
 pub type FetchErr = Box<dyn std::error::Error + Send + Sync>;
 
@@ -46,13 +48,12 @@ pub struct RequestData<T> {
 pub trait QueueRequest {
     fn get_client(&self) -> Client<HttpsConnector<HttpConnector>>;
 
-    fn request_complete<T>(&self, response_slice: &Vec<u8>, request_data: &RequestData<T>)
-        where T: Debug + Clone;
-
     async fn queue_request<T>(&self,
                               requests: Vec<RequestData<T>>,
                               delay_milli: u16,
-                              concurrent: u16 ) -> Result<(), RequestHandlerError>  // TODO: Change return to duration of how long it took
+                              concurrent: u16,
+                              callback: fn(Vec<u8>, RequestData<T>) -> Result<(), anyhow::Error>)
+        -> Result<(), RequestHandlerError>
     where T: Debug + Clone + Send + Sync
     {
         let mut receivers = Vec::<Receiver<&RequestData<T>>>::new();
@@ -65,7 +66,7 @@ pub trait QueueRequest {
 
         let request_start_time = Instant::now();
         let delay_milli = delay_milli as usize;
-        let t_requests = requests.len() - 1;
+        let t_requests = requests.len();
 
         let fut = stream::iter(receivers).for_each_concurrent(
         concurrent as usize,
@@ -76,15 +77,17 @@ pub trait QueueRequest {
                 sleep_until(request_start_time + Duration::from_millis(
                     (request_data.count*delay_milli) as u64)).await;
 
-                info!("[{}/{}] Making request for {}", request_data.count, t_requests, request_data.url);
+                info!("[{}/{}] Making request for {}", request_data.count + 1, t_requests, request_data.url);
                 let client = self.get_client();
 
                 match fetch_buffer(&client, request_data).await {
-                    Ok(e) => {
-                        self.request_complete(&e, request_data);
-                        debug!("Sucessfully completed operations for {}", request_data.url)
+                    Ok(r) => {
+                        match callback(r, request_data.clone()) {
+                            Ok(_) => debug!("Sucessfully completed operations for {}", request_data.url),
+                            Err(_) => warn!("Failed to complete inserts for {}", request_data.url)
+                        }
                     },
-                    Err(e) => warn!("Failed to complete operations for {}: {}", request_data.url, e.to_string())
+                    Err(e) => warn!("Failed to complete request for {}: {}", request_data.url, e.to_string())
                 };
 
             },
@@ -101,7 +104,6 @@ pub trait QueueRequest {
         Ok(())
     }
 }
-
 
 pub async fn fetch_buffer<T>(client: &Client<HttpsConnector<HttpConnector>>,
                              request_data: &RequestData<T>) -> Result<Vec<u8>, RequestHandlerError> {

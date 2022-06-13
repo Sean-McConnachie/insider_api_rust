@@ -3,8 +3,9 @@ use serde::{Deserialize, Serialize};
 
 use crate::database;
 use crate::database_errors::DbError;
-use crate::schema::allfilings;
+use crate::schema::{allfilings, jsondocs, stockdata};
 use crate::models::stock_data::StockData;
+use crate::models::json_docs::JsonDocs;
 
 #[derive(Identifiable, Associations, Serialize, Deserialize, Queryable, Insertable, Debug)]
 #[table_name = "allfilings"]
@@ -23,4 +24,25 @@ pub struct AllFilings {
     pub fulfilled: bool,
 }
 
-impl AllFilings { }
+impl AllFilings {
+    pub fn insert_many(data: Vec<Self>) -> Result<(), DbError> {
+        let conn = database::connection()?;
+
+        conn.transaction(|| {
+            // First insert the items
+            diesel::insert_into(allfilings::table)
+                .values(&data)
+                .execute(&conn)?;
+            // Then set the fulfilled colum in json_docs to true
+            let x = JsonDocs::belonging_to(&data)
+                .update(jsondocs::fulfilled.eq(true))
+                .execute(&conn)?;
+            Ok(())
+        })?;
+        Ok(())
+    }
+
+    pub fn insert(data: Self) -> Result<(), DbError> {
+        Self::insert_many(vec![data])
+    }
+}

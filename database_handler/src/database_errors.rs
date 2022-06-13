@@ -4,7 +4,7 @@ use thiserror::Error;
 #[derive(Error, Debug)]
 pub enum DbError {
     #[error("R2D2 error | Couldn't connect to database")]
-    ConnectionError(String),
+    ConnectionError(#[from] r2d2::Error),
     #[error("Diesel error | Couldn't connect to database")]
     InvalidCString(String),
     #[error("Diesel error | Couldn't connect to database")]

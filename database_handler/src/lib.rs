@@ -7,6 +7,6 @@ extern crate log;
 
 pub mod database;
 pub mod models;
-mod schema;
+pub mod schema;
 mod settings;
 pub mod database_errors;

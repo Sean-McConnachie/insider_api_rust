@@ -22,7 +22,7 @@ table! {
 
 table! {
     dholdings (id) {
-        id -> Int4,
+        id -> Nullable<Int4>,
         accession_number -> Int8,
         security_title -> Varchar,
         price -> Float4,
@@ -37,7 +37,7 @@ table! {
 
 table! {
     dtransactions (id) {
-        id -> Int4,
+        id -> Nullable<Int4>,
         accession_number -> Int8,
         security_title -> Varchar,
         price -> Float4,
@@ -67,7 +67,7 @@ table! {
 
 table! {
     insiderroles (id) {
-        id -> Int4,
+        id -> Nullable<Int4>,
         insider_cik -> Int4,
         company_cik -> Int4,
         director -> Bool,
@@ -87,7 +87,7 @@ table! {
 
 table! {
     jsondocs (id) {
-        id -> Int4,
+        id -> Nullable<Int4>,
         company_cik -> Int4,
         url -> Varchar,
         old -> Bool,
@@ -97,7 +97,7 @@ table! {
 
 table! {
     ndholdings (id) {
-        id -> Int4,
+        id -> Nullable<Int4>,
         accession_number -> Int8,
         security_title -> Varchar,
         post_transaction_amount -> Float4,
@@ -108,7 +108,7 @@ table! {
 
 table! {
     ndtransactions (id) {
-        id -> Int4,
+        id -> Nullable<Int4>,
         accession_number -> Int8,
         security_title -> Varchar,
         transaction_date -> Nullable<Int8>,

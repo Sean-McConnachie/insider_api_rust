@@ -10,7 +10,7 @@ use crate::models::all_filings::AllFilings;
 #[table_name = "ndholdings"]
 #[belongs_to(AllFilings, foreign_key = "accession_number")]
 pub struct NdHoldings {
-    pub id: i32,
+    pub id: Option<i32>,
     pub accession_number: i64,
     pub security_title: String,
     pub post_transaction_amount: f32,

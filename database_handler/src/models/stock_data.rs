@@ -1,9 +1,13 @@
 use diesel::prelude::*;
+use diesel::types::Json;
+use diesel::{debug_query, sql_query};
 use serde::{Deserialize, Serialize};
 
 use crate::database;
 use crate::database_errors::DbError;
-use crate::schema::stockdata;
+use crate::schema::{stockdata, jsondocs};
+use crate::models::json_docs::JsonDocs;
+
 
 #[derive(Identifiable, Serialize, Deserialize, Queryable, Insertable, Debug)]
 #[table_name = "stockdata"]
@@ -18,7 +22,7 @@ pub struct StockData {
 }
 
 impl StockData {
-    pub fn insert_many(data: Vec<StockData>) -> Result<usize, DbError> {
+    pub fn insert_many(data: Vec<Self>) -> Result<usize, DbError> {
         let conn = database::connection()?;
         let u = diesel::insert_into(stockdata::table)
             .values(&data)
@@ -26,7 +30,7 @@ impl StockData {
         Ok(u)
     }
 
-    pub fn insert(data: StockData) -> Result<usize, DbError> {
-        StockData::insert_many(vec![data])
+    pub fn insert(data: Self) -> Result<usize, DbError> {
+        Self::insert_many(vec![data])
     }
 }
