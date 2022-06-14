@@ -26,28 +26,23 @@ pub struct AllFilings {
 }
 
 impl AllFilings {
-    pub fn insert_many(data: Vec<Self>) -> Result<(), DbError> {
+    pub fn insert_update_transaction(data: Vec<Self>, company_cik: i32, old: bool) -> Result<(), DbError> {
         let conn = database::connection()?;
 
         conn.transaction::<_, diesel::result::Error, _>(|| {
             // First insert the items
-            diesel::insert_into(all_filings::table)
+            let x = diesel::insert_into(all_filings::table)
                 .values(&data)
                 .execute(&conn)?;
             // Then set the fulfilled colum in json_docs to true
-            println!("UPDATE HERE");
-            /*
-            let x = JsonDocs::belonging_to(&data)
-                .update(jsondocs::fulfilled.eq(true))
+            diesel::update(json_docs::table)
+                .filter(json_docs::company_cik.eq(company_cik))
+                .filter(json_docs::old.eq(old))
+                .set(json_docs::fulfilled.eq(true))
                 .execute(&conn)?;
-            */
-            Err(diesel::result::Error::RollbackTransaction)
-            //Ok(())
+            Ok(())
         })?;
         Ok(())
     }
 
-    pub fn insert(data: Self) -> Result<(), DbError> {
-        Self::insert_many(vec![data])
-    }
 }

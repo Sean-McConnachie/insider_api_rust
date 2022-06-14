@@ -4,13 +4,12 @@
 extern crate log;
 extern crate core;
 
-
 use std;
 use std::fs;
 use std::process::exit;
 use thiserror::Error;
 use tokio;
-use hyper::Client;
+use hyper::{Client, HeaderMap};
 use hyper::client::HttpConnector;
 use hyper_tls::HttpsConnector;
 use serde_json;
@@ -73,11 +72,20 @@ impl Insider {
     }
 
     async fn run(&mut self) -> Result<(), InsiderError> {
-        info!("Running insider");
+        // TODO: Make error catches for all callbacks insider their mod files (i.e. catch individual requests)
+        info!("Starting json collection");
         match self.run_json().await {
-            Ok(_) => println!("Successfully ran json"),
+            Ok(_) => println!("Successfully ran json."),
             Err(e) => println!("Error running json: {:?}", e)
         }
+        /*
+        info!("Starting RSS collection.");
+        match self.run_rss().await {
+            Ok(_) => println!("Successfully ran RSS."),
+            Err(e) => println!("Error running RSS: {:?}", e)
+        }
+         */
+
         Ok(())
     }
 }

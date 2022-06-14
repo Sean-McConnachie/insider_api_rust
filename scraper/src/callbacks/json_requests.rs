@@ -30,13 +30,16 @@ struct JsonReqData {
 
 impl Insider {
     pub async fn run_json(&mut self) -> Result<(), CallbackError> {
-
+        // TODO remove xlms123251234 thing on url
+        //let c = fs::read("scraper/src/example.json").unwrap();
+        //let parsed: json_response::FullResponse = serde_json::from_slice(&c).unwrap();
+        //exit(1);
         // Finds the company_cik(s) that are found in stockdata but not in jsondocs
         self.generate_diff_jsons()?;
 
         // Find unfulfilled requests in the db where old = false + make requests + insert to database
-        let requests = self.make_request(false).await?;
-        let requests = self.make_request(true).await?;
+        self.make_request(false).await?;
+        self.make_request(true).await?;
 
         Ok(())
     }
@@ -66,10 +69,9 @@ impl Insider {
                     json_subsequent_url: self.config.sec.json_subsequent_url.clone()
                 },
                 url: file.url,
-                headers: HeaderMap::default(),
+                headers: self.config.sec.headers.clone(),
                 count: i,
             });
-            break
         }
         requests
     }
@@ -111,7 +113,7 @@ impl Insider {
             json_docs::JsonDocs::insert_many(subsequent_jsons)?;
         }
 
-        Insider::json_parse_insert(&request_data, &json_data.filings.recent)?;
+        Insider::json_parse_insert(&request_data, &json_data.filings.recent, false)?;
         Ok(())
     }
 
@@ -119,12 +121,13 @@ impl Insider {
                                 -> Result<(), anyhow::Error>
     {
         let json_data: json_response::Data = serde_json::from_slice(&response_slice)?;
-        Insider::json_parse_insert(&request_data, &json_data)?;
+        Insider::json_parse_insert(&request_data, &json_data, true)?;
         Ok(())
     }
 
-    fn json_parse_insert(request_data: &RequestData<JsonReqData>, filing_data: &json_response::Data)
-                         -> Result<(), CallbackError>
+    fn json_parse_insert(request_data: &RequestData<JsonReqData>,
+                         filing_data: &json_response::Data,
+                         old: bool) -> Result<(), CallbackError>
     {
         let filing_data: &json_response::Data = filing_data;
         let company_cik = request_data.data.cik;
@@ -142,7 +145,7 @@ impl Insider {
                     filing_date: filing_data.filing_date[index],
                     report_date: filing_data.report_date[index],
                     size: filing_data.size[index],
-                    company_cik: company_cik,
+                    company_cik,
                     form_link: Some(form_link),
                     index_link: None,
                     form_type: form_type.to_string(),
@@ -151,10 +154,7 @@ impl Insider {
             }
         }
 
-        if document_inserts.len() > 0 {
-            AllFilings::insert_many(document_inserts)?;
-        }
-
+        AllFilings::insert_update_transaction(document_inserts, company_cik, old).expect("Failed to insert documents");
         Ok(())
     }
 }
