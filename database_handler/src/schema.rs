@@ -1,5 +1,5 @@
 table! {
-    allfilings (accession_number) {
+    all_filings (accession_number) {
         accession_number -> Int8,
         acceptance_datetime -> Int8,
         filing_date -> Int8,
@@ -14,59 +14,25 @@ table! {
 }
 
 table! {
-    allinsiders (insider_cik) {
+    all_insiders (insider_cik) {
         insider_cik -> Int4,
         name -> Varchar,
     }
 }
 
 table! {
-    dholdings (id) {
-        id -> Nullable<Int4>,
+    filings_data (accession_number) {
         accession_number -> Int8,
-        security_title -> Varchar,
-        price -> Float4,
-        exercise_date -> Nullable<Int8>,
-        expiration_date -> Nullable<Int8>,
-        underlying_security_title -> Varchar,
-        underlying_security_price -> Float4,
-        ownership_nature -> Varchar,
-        indirect_relation -> Nullable<Varchar>,
+        d_holdings -> Jsonb,
+        d_transactions -> Jsonb,
+        nd_holdings -> Jsonb,
+        nd_transactions -> Jsonb,
+        footnotes -> Jsonb,
     }
 }
 
 table! {
-    dtransactions (id) {
-        id -> Nullable<Int4>,
-        accession_number -> Int8,
-        security_title -> Varchar,
-        price -> Float4,
-        transaction_date -> Nullable<Int8>,
-        deemed_execution_date -> Nullable<Int8>,
-        transaction_code -> Varchar,
-        transaction_equity_swap -> Bool,
-        transaction_shares -> Float4,
-        transaction_share_price -> Float4,
-        transaction_ad_code -> Varchar,
-        exercise_date -> Nullable<Int8>,
-        expiration_date -> Nullable<Int8>,
-        underlying_security_title -> Varchar,
-        underlying_security_price -> Float4,
-        post_transaction_total_shares -> Float4,
-        ownership_nature -> Varchar,
-        indirect_relation -> Nullable<Varchar>,
-    }
-}
-
-table! {
-    filingsother (accession_number) {
-        accession_number -> Int8,
-        footnotes_json -> Text,
-    }
-}
-
-table! {
-    insiderroles (id) {
+    insider_roles (id) {
         id -> Nullable<Int4>,
         insider_cik -> Int4,
         company_cik -> Int4,
@@ -86,7 +52,7 @@ table! {
 }
 
 table! {
-    jsondocs (id) {
+    json_docs (id) {
         id -> Nullable<Int4>,
         company_cik -> Int4,
         url -> Varchar,
@@ -96,35 +62,7 @@ table! {
 }
 
 table! {
-    ndholdings (id) {
-        id -> Nullable<Int4>,
-        accession_number -> Int8,
-        security_title -> Varchar,
-        post_transaction_amount -> Float4,
-        ownership_nature -> Varchar,
-        indirect_relation -> Nullable<Varchar>,
-    }
-}
-
-table! {
-    ndtransactions (id) {
-        id -> Nullable<Int4>,
-        accession_number -> Int8,
-        security_title -> Varchar,
-        transaction_date -> Nullable<Int8>,
-        transaction_code -> Varchar,
-        transaction_equity_swap -> Bool,
-        transaction_shares -> Float4,
-        transaction_share_price -> Float4,
-        transaction_ad_code -> Varchar,
-        post_transaction_total_shares -> Float4,
-        ownership_nature -> Varchar,
-        indirect_relation -> Nullable<Varchar>,
-    }
-}
-
-table! {
-    stockdata (company_cik) {
+    stock_data (company_cik) {
         company_cik -> Int4,
         ticker -> Varchar,
         exchange -> Varchar,
@@ -134,25 +72,17 @@ table! {
     }
 }
 
-joinable!(allfilings -> stockdata (company_cik));
-joinable!(dholdings -> allfilings (accession_number));
-joinable!(dtransactions -> allfilings (accession_number));
-joinable!(filingsother -> allfilings (accession_number));
-joinable!(insiderroles -> allinsiders (insider_cik));
-joinable!(insiderroles -> stockdata (company_cik));
-joinable!(jsondocs -> stockdata (company_cik));
-joinable!(ndholdings -> allfilings (accession_number));
-joinable!(ndtransactions -> allfilings (accession_number));
+joinable!(all_filings -> stock_data (company_cik));
+joinable!(filings_data -> all_filings (accession_number));
+joinable!(insider_roles -> all_insiders (insider_cik));
+joinable!(insider_roles -> stock_data (company_cik));
+joinable!(json_docs -> stock_data (company_cik));
 
 allow_tables_to_appear_in_same_query!(
-    allfilings,
-    allinsiders,
-    dholdings,
-    dtransactions,
-    filingsother,
-    insiderroles,
-    jsondocs,
-    ndholdings,
-    ndtransactions,
-    stockdata,
+    all_filings,
+    all_insiders,
+    filings_data,
+    insider_roles,
+    json_docs,
+    stock_data,
 );

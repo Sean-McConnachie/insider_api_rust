@@ -5,12 +5,12 @@ use serde::{Deserialize, Serialize};
 
 use crate::database;
 use crate::database_errors::DbError;
-use crate::schema::{stockdata, jsondocs};
+use crate::schema::{stock_data, json_docs};
 use crate::models::json_docs::JsonDocs;
 
 
 #[derive(Identifiable, Serialize, Deserialize, Queryable, Insertable, Debug)]
-#[table_name = "stockdata"]
+#[table_name = "stock_data"]
 #[primary_key(company_cik)]
 pub struct StockData {
     pub company_cik: i32,
@@ -24,7 +24,7 @@ pub struct StockData {
 impl StockData {
     pub fn insert_many(data: Vec<Self>) -> Result<usize, DbError> {
         let conn = database::connection()?;
-        let u = diesel::insert_into(stockdata::table)
+        let u = diesel::insert_into(stock_data::table)
             .values(&data)
             .execute(&conn)?;
         Ok(u)

@@ -29,7 +29,7 @@ pub enum RequestHandlerError {
     #[error("Header key error")]
     HeaderKeyErr(String),
     #[error("Status code error")]
-    StatusCodeErr(StatusCode),
+    StatusCodeErr(u16),
     #[error("Hyper HTTP error")]
     HyperHttpErr(#[from] hyper::http::Error),
     #[error("Hyper request error")]
@@ -87,7 +87,7 @@ pub trait QueueRequest {
                             Err(_) => warn!("Failed to complete inserts for {}", request_data.url)
                         }
                     },
-                    Err(e) => warn!("Failed to complete request for {}: {}", request_data.url, e.to_string())
+                    Err(e) => warn!("Failed to complete request for {}: {:?}", request_data.url, e)
                 };
 
             },
@@ -129,6 +129,6 @@ pub async fn fetch_buffer<T>(client: &Client<HttpsConnector<HttpConnector>>,
     // TODO: Error handling for status codes - i.e. Retry for network errors
     match res.status() {
         StatusCode::OK => Ok(buf),
-        e => Err(RequestHandlerError::StatusCodeErr(e))
+        e => Err(RequestHandlerError::StatusCodeErr(e.as_u16()))
     }
 }

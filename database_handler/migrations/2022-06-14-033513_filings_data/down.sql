@@ -1,0 +1,1 @@
+DROP TABLE "filings_data";

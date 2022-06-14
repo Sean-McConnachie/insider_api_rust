@@ -3,12 +3,12 @@ use serde::{Deserialize, Serialize};
 
 use crate::database;
 use crate::database_errors::DbError;
-use crate::schema::insiderroles;
+use crate::schema::insider_roles;
 use crate::models::stock_data::StockData;
 use crate::models::all_insiders::AllInsiders;
 
 #[derive(Identifiable, Associations, Serialize, Deserialize, Queryable, Insertable, Debug)]
-#[table_name = "insiderroles"]
+#[table_name = "insider_roles"]
 #[belongs_to(AllInsiders, foreign_key = "insider_cik")]
 #[belongs_to(StockData, foreign_key = "company_cik")]
 pub struct InsiderRoles {

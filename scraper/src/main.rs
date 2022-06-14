@@ -1,3 +1,5 @@
+#![allow(dead_code)] // TODO
+
 #[macro_use]
 extern crate log;
 extern crate core;
@@ -5,6 +7,7 @@ extern crate core;
 
 use std;
 use std::fs;
+use std::process::exit;
 use thiserror::Error;
 use tokio;
 use hyper::Client;
@@ -73,7 +76,7 @@ impl Insider {
         info!("Running insider");
         match self.run_json().await {
             Ok(_) => println!("Successfully ran json"),
-            Err(_) => println!("Error running json")
+            Err(e) => println!("Error running json: {:?}", e)
         }
         Ok(())
     }
@@ -95,7 +98,7 @@ async fn main() -> Result<(), InsiderError> {
     logger.init();
 
     let mut insider = Insider::init(config);
-    //insider.insert_default().expect("Failed to insert default records");
+    // insider.insert_default().expect("Failed to insert default records");
     insider.run().await?;
 
     Ok(())

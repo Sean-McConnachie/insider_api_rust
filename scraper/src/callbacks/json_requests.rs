@@ -69,6 +69,7 @@ impl Insider {
                 headers: HeaderMap::default(),
                 count: i,
             });
+            break
         }
         requests
     }
@@ -77,7 +78,6 @@ impl Insider {
         let jsons = json_docs::JsonDocs::old_select(old)?;
 
         let requests = self.create_requests(jsons);
-
 
         let func = match old {
             false => Insider::json_recent_callback,
