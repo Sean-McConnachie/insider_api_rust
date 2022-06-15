@@ -13,4 +13,18 @@ pub struct AllInsiders {
     pub name: String
 }
 
-impl AllInsiders { }
+impl AllInsiders {
+    pub fn exists(insider_cik: i32) -> Result<bool, DbError> {
+        let conn = database::connection()?;
+
+        let exists = all_insiders::table
+            .filter(all_insiders::insider_cik.eq(&insider_cik))
+            .select(all_insiders::insider_cik)
+            .get_results::<i32>(&conn)?;
+
+        match exists.len() {
+            0 => Ok(false),
+            _ => Ok(true)
+        }
+    }
+}

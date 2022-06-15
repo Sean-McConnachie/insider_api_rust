@@ -2,7 +2,7 @@ use serde::{self, Deserialize, Deserializer};
 use serde::de::Error;
 
 
-pub fn deserialize<'de, D>(deserializer: D) -> Result<Vec<i64>, D::Error>
+pub fn deserialize_vec<'de, D>(deserializer: D) -> Result<Vec<i64>, D::Error>
     where
         D: Deserializer<'de>,
 {
@@ -20,5 +20,22 @@ pub fn deserialize<'de, D>(deserializer: D) -> Result<Vec<i64>, D::Error>
             };
         }
         Ok(parsed)
+    }
+}
+
+pub fn deserialize<'de, D>(deserializer: D) -> Result<i64, D::Error>
+    where
+        D: Deserializer<'de>,
+{
+
+    let val: Option<String> = Option::deserialize(deserializer)?;
+    return if val == None {
+        Err(Error::custom("Failed to convert accession number to i64"))
+    } else {
+        let val = val.unwrap().replace("-", "");
+        match val.parse::<i64>() {
+            Ok(v) => Ok(v),
+            _ => Err(Error::custom("Failed to convert accession number to i64"))
+        }
     }
 }

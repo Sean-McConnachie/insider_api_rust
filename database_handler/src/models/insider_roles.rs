@@ -29,4 +29,19 @@ pub struct InsiderRoles {
     pub state_description: Option<String>
 }
 
-impl InsiderRoles { }
+impl InsiderRoles {
+    pub fn exists(insider_cik: i32, company_cik: i32) -> Result<bool, DbError> {
+        let conn = database::connection()?;
+
+        let exists = insider_roles::table
+            .filter(insider_roles::insider_cik.eq(&insider_cik))
+            .filter(insider_roles::company_cik.eq(&company_cik))
+            .select(insider_roles::insider_cik)
+            .get_results::<i32>(&conn)?;
+
+        match exists.len() {
+            0 => Ok(false),
+            _ => Ok(true)
+        }
+    }
+}

@@ -30,21 +30,17 @@ struct JsonReqData {
 
 impl Insider {
     pub async fn run_json(&mut self) -> Result<(), CallbackError> {
-        // TODO remove xlms123251234 thing on url
-        //let c = fs::read("scraper/src/example.json").unwrap();
-        //let parsed: json_response::FullResponse = serde_json::from_slice(&c).unwrap();
-        //exit(1);
         // Finds the company_cik(s) that are found in stockdata but not in jsondocs
-        self.generate_diff_jsons()?;
+        self.json_generate_diff()?;
 
         // Find unfulfilled requests in the db where old = false + make requests + insert to database
-        self.make_request(false).await?;
-        self.make_request(true).await?;
+        self.json_make_request(false).await?;
+        self.json_make_request(true).await?;
 
         Ok(())
     }
 
-    fn generate_diff_jsons(&self) -> Result<(), CallbackError> {
+    fn json_generate_diff(&self) -> Result<(), CallbackError> {
         let diff_ciks = json_docs::JsonDocs::select_not_in_jsondocs()?;
         let recent_jsons = diff_ciks.iter().map(|company_cik| {
             json_docs::JsonDocs {
@@ -59,7 +55,25 @@ impl Insider {
         Ok(())
     }
 
-    fn create_requests(&self, files: Vec<json_docs::JsonDocs>) -> Vec<RequestData<JsonReqData>> {
+    async fn json_make_request(&self, old: bool) -> Result<(), CallbackError> {
+        let jsons = json_docs::JsonDocs::old_select(old)?;
+
+        let requests = self.json_create_requests(jsons);
+
+        let func = match old {
+            false => Insider::json_recent_callback,
+            true => Insider::json_subsequent_callback
+        };
+
+        self.queue_request(requests,
+                           self.config.sec.delay_milli,
+                           self.config.sec.concurrent,
+                           func).await?;
+
+        Ok(())
+    }
+
+    fn json_create_requests(&self, files: Vec<json_docs::JsonDocs>) -> Vec<RequestData<JsonReqData>> {
         let mut requests = Vec::new();
         for (i, file) in files.into_iter().enumerate() {
             requests.push(RequestData {
@@ -74,24 +88,6 @@ impl Insider {
             });
         }
         requests
-    }
-
-    async fn make_request(&self, old: bool) -> Result<(), CallbackError> {
-        let jsons = json_docs::JsonDocs::old_select(old)?;
-
-        let requests = self.create_requests(jsons);
-
-        let func = match old {
-            false => Insider::json_recent_callback,
-            true => Insider::json_subsequent_callback
-        };
-
-        self.queue_request(requests,
-                           self.config.sec.delay_milli,
-                           self.config.sec.concurrent,
-                           func).await?;
-
-        Ok(())
     }
 
     fn json_recent_callback(response_slice: Vec<u8>, request_data: RequestData<JsonReqData>)
@@ -154,7 +150,7 @@ impl Insider {
             }
         }
 
-        AllFilings::insert_update_transaction(document_inserts, company_cik, old).expect("Failed to insert documents");
+        AllFilings::insert_update_transaction(document_inserts, company_cik, old)?;
         Ok(())
     }
 }

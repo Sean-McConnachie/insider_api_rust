@@ -3,7 +3,7 @@ use serde::{self, Deserialize, Deserializer, Serializer};
 use serde::de::Error;
 
 
-pub fn deserialize<'de, D>(deserializer: D) -> Result<Vec<i64>, D::Error>
+pub fn deserialize_vec<'de, D>(deserializer: D) -> Result<Vec<i64>, D::Error>
     where
         D: Deserializer<'de>,
 {
@@ -25,5 +25,22 @@ pub fn deserialize<'de, D>(deserializer: D) -> Result<Vec<i64>, D::Error>
             };
         }
         Ok(parsed)
+    }
+}
+
+pub fn deserialize<'de, D>(deserializer: D) -> Result<i64, D::Error>
+    where
+        D: Deserializer<'de>,
+{
+    let val: Option<String> = Option::deserialize(deserializer)?;
+    return if val == None {
+        Err(Error::custom("Failed to convert datetime to i64"))
+    } else {
+        let val = val.unwrap();
+        if val == "" { return Ok(0); }
+        match Utc.datetime_from_str(&val, "%Y-%m-%dT%H:%M:%S.000Z") {
+            Ok(v) => Ok(v.timestamp_millis()),
+            _ => Err(Error::custom("Failed to convert datetime to i64"))
+        }
     }
 }

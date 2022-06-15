@@ -23,6 +23,7 @@ pub struct Sec {
     pub rss_feed_url: String,
     pub rss_count: u16,
     pub xml_url: String,
+    pub base_url: String,
     pub headers: HeaderMap
 }
 
@@ -40,6 +41,7 @@ impl Default for Sec {
             rss_feed_url: "https://data.sec.gov/rss?cik={}&type=3,4,5&count={}".to_string(),
             rss_count: 20,
             xml_url: "https://www.sec.gov/Archives/edgar/data/{}/{}/{}".to_string(),
+            base_url: "https://www.sec.gov{}".to_string(),
             headers: h_map
         }
     }

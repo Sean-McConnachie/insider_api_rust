@@ -3,25 +3,34 @@ use thiserror::Error;
 
 #[derive(Error, Debug)]
 pub enum DbError {
-    #[error("R2D2 error | Couldn't connect to database")]
+    #[error("R2D2 error | ConnectionError")]
     ConnectionError(#[from] r2d2::Error),
-    #[error("Diesel error | Couldn't connect to database")]
+
+    #[error("Diesel error | InvalidCString")]
     InvalidCString(String),
-    #[error("Diesel error | Couldn't connect to database")]
+
+    #[error("Diesel error | DatabaseError")]
     DatabaseError(String),
-    #[error("Diesel error | Couldn't connect to database")]
+
+    #[error("Diesel error | NotFound")]
     NotFound(String),
-    #[error("Diesel error | Couldn't connect to database")]
+
+    #[error("Diesel error | QueryBuilderError")]
     QueryBuilderError(String),
-    #[error("Diesel error | Couldn't connect to database")]
+
+    #[error("Diesel error | DeserializationError")]
     DeserializationError(String),
-    #[error("Diesel error | Couldn't connect to database")]
+
+    #[error("Diesel error | SerializationError")]
     SerializationError(String),
-    #[error("Diesel error | Couldn't connect to database")]
+
+    #[error("Diesel error | RollbackTransaction")]
     RollbackTransaction(String),
-    #[error("Diesel error | Couldn't connect to database")]
+
+    #[error("Diesel error | AlreadyInTransaction")]
     AlreadyInTransaction(String),
-    #[error("Diesel error | Couldn't connect to database")]
+
+    #[error("Diesel error | Nonexhaustive")]
     Nonexhaustive(String),
 }
 

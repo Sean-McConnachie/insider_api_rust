@@ -25,19 +25,19 @@ pub struct Files {
 
 #[derive(Deserialize, Clone, Debug)]
 pub struct Data {
-    #[serde(deserialize_with  = "accession_number::deserialize")]
+    #[serde(deserialize_with  = "accession_number::deserialize_vec")]
     #[serde(rename = "accessionNumber")]
     pub accession_number: Vec<i64>,
 
-    #[serde(deserialize_with  = "date::deserialize")]
+    #[serde(deserialize_with  = "date::deserialize_vec")]
     #[serde(rename = "filingDate")]
     pub filing_date: Vec<i64>,
 
-    #[serde(deserialize_with  = "date::deserialize")]
+    #[serde(deserialize_with  = "date::deserialize_vec")]
     #[serde(rename = "reportDate")]
     pub report_date: Vec<i64>,
 
-    #[serde(deserialize_with  = "datetime::deserialize")]
+    #[serde(deserialize_with  = "datetime::deserialize_vec")]
     #[serde(rename = "acceptanceDateTime")]
     pub acceptance_date_time: Vec<i64>,
 

@@ -5,6 +5,7 @@ extern crate log;
 extern crate core;
 
 use std;
+use std::convert::Infallible;
 use std::fs;
 use std::process::exit;
 use thiserror::Error;
@@ -45,10 +46,17 @@ pub enum CallbackError {
     RequestHandlerErr(#[from] RequestHandlerError),
     #[error("Database error")]
     DatabaseErr(#[from] DbError),
-    #[error("Serde Error")]
+    #[error("Serde error")]
     SerdeError(#[from] serde_json::Error),
+    #[error("HTML Parse error")]
+    HtmlParseErr(String),
+    #[error("Option error")]
+    OptionErr(String),
+    #[error("Anyhow, lets continue")]
+    AnyhowErr(#[from] anyhow::Error),
+    #[error("Unwrap error")]
+    UnwrapErr(String),
 }
-
 
 struct Insider {
     config: settings::Settings,
@@ -75,16 +83,26 @@ impl Insider {
         // TODO: Make error catches for all callbacks insider their mod files (i.e. catch individual requests)
         info!("Starting json collection");
         match self.run_json().await {
-            Ok(_) => println!("Successfully ran json."),
-            Err(e) => println!("Error running json: {:?}", e)
+            Ok(_) => warn!("Successfully ran json."),
+            Err(e) => info!("Error running json: {:?}", e)
         }
-        /*
+
         info!("Starting RSS collection.");
         match self.run_rss().await {
-            Ok(_) => println!("Successfully ran RSS."),
-            Err(e) => println!("Error running RSS: {:?}", e)
+            Ok(_) => warn!("Successfully ran RSS."),
+            Err(e) => info!("Error running RSS: {:?}", e)
         }
-         */
+
+        info!("Starting index collection");
+        match self.run_index().await {
+            Ok(_) => warn!("Successfully ran index."),
+            Err(e) => info!("Error running index: {:?}", e)
+        }
+
+        match self.run_xml().await {
+            Ok(_) => warn!("Successfully ran xml."),
+            Err(e) => info!("Error running xml: {:?}", e)
+        }
 
         Ok(())
     }

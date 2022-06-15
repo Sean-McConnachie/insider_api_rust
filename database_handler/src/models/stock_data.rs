@@ -33,4 +33,12 @@ impl StockData {
     pub fn insert(data: Self) -> Result<usize, DbError> {
         Self::insert_many(vec![data])
     }
+
+    pub fn select_ciks() -> Result<Vec<i32>, DbError> {
+        let conn = database::connection()?;
+        let u = stock_data::table
+            .select(stock_data::company_cik)
+            .load(&conn)?;
+        Ok(u)
+    }
 }

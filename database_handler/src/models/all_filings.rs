@@ -25,13 +25,27 @@ pub struct AllFilings {
     pub fulfilled: bool,
 }
 
+
+#[derive(Queryable, Serialize, Deserialize, Debug)]
+pub struct AccessionIndex {
+    pub index_link: Option<String>,
+    pub accession_number: i64
+}
+
+#[derive(Queryable, Serialize, Deserialize, Debug)]
+pub struct AccessionForm {
+    pub form_link: Option<String>,
+    pub accession_number: i64,
+    pub company_cik: i32
+}
+
 impl AllFilings {
     pub fn insert_update_transaction(data: Vec<Self>, company_cik: i32, old: bool) -> Result<(), DbError> {
         let conn = database::connection()?;
 
         conn.transaction::<_, diesel::result::Error, _>(|| {
             // First insert the items
-            let x = diesel::insert_into(all_filings::table)
+            diesel::insert_into(all_filings::table)
                 .values(&data)
                 .execute(&conn)?;
             // Then set the fulfilled colum in json_docs to true
@@ -44,5 +58,50 @@ impl AllFilings {
         })?;
         Ok(())
     }
+
+    pub fn update_form_link(accession_number: i64, form_link: String) -> Result<(), DbError> {
+        let conn = database::connection()?;
+
+        diesel::update(all_filings::table)
+            .filter(all_filings::accession_number.eq(accession_number))
+            .set(all_filings::form_link.eq(form_link))
+            .execute(&conn)?;
+
+        Ok(())
+    }
+
+    pub fn select_accession_numbers_by_cik(company_cik: i32) -> Result<Vec<i64>, DbError> {
+        let conn = database::connection()?;
+        let accession_numbers = all_filings::table
+            .select(all_filings::accession_number)
+            .filter(all_filings::company_cik.eq(company_cik))
+            .load::<i64>(&conn)?;
+        Ok(accession_numbers)
+    }
+
+    pub fn select_accession_index() -> Result<Vec<AccessionIndex>, DbError> {
+        let conn = database::connection()?;
+        let u = all_filings::table
+            .select((all_filings::index_link,
+                     all_filings::accession_number))
+            .filter(all_filings::form_link.is_null())
+            .filter(all_filings::index_link.is_not_null())
+            .filter(all_filings::fulfilled.eq(false))
+            .load::<AccessionIndex>(&conn)?;
+        Ok(u)
+    }
+
+    pub fn select_accession_form() -> Result<Vec<AccessionForm>, DbError> {
+        let conn = database::connection()?;
+        let u = all_filings::table
+            .select((all_filings::form_link,
+                     all_filings::accession_number,
+                     all_filings::company_cik))
+            .filter(all_filings::form_link.is_not_null())
+            .filter(all_filings::fulfilled.eq(false))
+            .load::<AccessionForm>(&conn)?;
+        Ok(u)
+    }
+
 
 }
