@@ -12,7 +12,7 @@ pub fn deserialize<'de, D>(deserializer: D) -> Result<Vec<String>, D::Error>
         Err(Error::custom("Failed to convert datetime to i64"))
     } else {
         for val in values.unwrap() {
-            parsed.push(if val.starts_with("xslF345X03/") || val.starts_with("xslF345X02/") {
+            parsed.push(if val.starts_with("xslF") {
                 let x = val[11..].to_string();
                 x
             } else {

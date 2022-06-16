@@ -133,6 +133,9 @@ impl Insider {
         for index in 0..filing_data.filing_date.len() {
             let form_type = filing_data.form_type[index].clone();
             if form_type == "3" || form_type == "4" || form_type == "5" {
+                if filing_data.form_path[index].ends_with(".htm") || filing_data.form_path[index].ends_with(".html") {
+                    continue;
+                }
                 let mut form_link = xml_url.replacen("{}", &*format!("{:0>18}", &filing_data.accession_number[index]), 1);
                 form_link = form_link.replacen("{}", &filing_data.form_path[index], 1);
                 document_inserts.push(AllFilings {
