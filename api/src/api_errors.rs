@@ -2,12 +2,12 @@ use std::fmt;
 
 use actix_web::{HttpResponse, ResponseError};
 use actix_web::http::StatusCode;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use serde_json::json;
 
 use database_handler::database_errors::DbError;
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct ApiError {
     pub status_code: u16,
     pub message: String,
@@ -30,6 +30,7 @@ impl From<DbError> for ApiError {
         match error {
             DbError::DatabaseError(e) => ApiError::new(409, e),
             DbError::NotFound(_) => ApiError::new(404, "No matching records found".to_string()),
+            DbError::ParseError(e) => ApiError::new(400, e),
             _ => ApiError::new(500, "Internal server error.".to_string()),
         }
     }
@@ -50,7 +51,6 @@ impl ResponseError for ApiError {
             }
         };
 
-        HttpResponse::build(status_code)
-            .json(json!({ "message": message }))
+        HttpResponse::build(status_code).json(Self{status_code: status_code.as_u16(), message})
     }
 }

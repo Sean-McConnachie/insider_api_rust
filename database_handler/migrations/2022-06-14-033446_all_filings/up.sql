@@ -8,5 +8,6 @@ CREATE TABLE "all_filings" (
     form_link VARCHAR DEFAULT NULL,
     index_link VARCHAR DEFAULT NULL,
     form_type VARCHAR(1) NOT NULL,
-    fulfilled BOOLEAN NOT NULL DEFAULT FALSE
+    fulfilled BOOLEAN NOT NULL DEFAULT FALSE,
+    owner_ciks JSONB DEFAULT NULL
 );

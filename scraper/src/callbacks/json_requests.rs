@@ -149,6 +149,7 @@ impl Insider {
                     index_link: None,
                     form_type: form_type.to_string(),
                     fulfilled: false,
+                    owner_ciks: None
                 });
             }
         }

@@ -90,10 +90,11 @@ impl FilingsData {
     pub fn insert(filings_documents: Self,
                   insider_documents: Vec<AllInsiders>,
                   roles_documents: Vec<InsiderRoles>,
-                  accession_number: i64) -> Result<(), DbError> {
+                  accession_number: i64,
+                  owner_ciks: Value) -> Result<(), DbError> {
         let conn = database::connection()?;
 
-        conn.transaction::<_, diesel::result::Error, _>(|| {
+        conn.transaction::<_, Error, _>(|| {
 
             diesel::insert_into(filings_data::table)
                 .values(&filings_documents)
@@ -110,7 +111,8 @@ impl FilingsData {
             // Then set the fulfilled colum in all_filings to true
             diesel::update(all_filings::table)
                 .filter(all_filings::accession_number.eq(accession_number))
-                .set(all_filings::fulfilled.eq(true))
+                .set((all_filings::fulfilled.eq(true),
+                     all_filings::owner_ciks.eq(owner_ciks)))
                 .execute(&conn)?;
 
             Ok(())

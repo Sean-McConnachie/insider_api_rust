@@ -129,9 +129,6 @@ pub async fn fetch_buffer<T>(client: &Client<HttpsConnector<HttpConnector>>,
     // TODO: Error handling for status codes - i.e. Retry for network errors
     match res.status() {
         StatusCode::OK => Ok(buf),
-        e => {
-            println!("{:?}", std::str::from_utf8(&buf));
-            Err(RequestHandlerError::StatusCodeErr(e.as_u16()))
-        }
+        e => Err(RequestHandlerError::StatusCodeErr(e.as_u16()))
     }
 }

@@ -32,6 +32,12 @@ pub enum DbError {
 
     #[error("Diesel error | Nonexhaustive")]
     Nonexhaustive(String),
+
+    #[error("ParseError")]
+    ParseError(String),
+
+    #[error("Serde json error")]
+    SerdeError(#[from] serde_json::Error),
 }
 
 impl From<DieselError> for DbError {

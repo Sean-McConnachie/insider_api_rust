@@ -10,6 +10,7 @@ table! {
         index_link -> Nullable<Varchar>,
         form_type -> Varchar,
         fulfilled -> Bool,
+        owner_ciks -> Nullable<Jsonb>,
     }
 }
 

@@ -11,6 +11,7 @@ use hyper::header::HOST;
 use hyper_tls::HttpsConnector;
 use quick_xml;
 use scraper::{Html, Selector};
+use serde::Serialize;
 
 use database_handler::database_errors::DbError;
 use database_handler::models::{all_filings, json_docs, stock_data, filings_data, all_insiders, insider_roles};
@@ -71,12 +72,14 @@ impl Insider {
                       -> Result<(), anyhow::Error>
     {
         fn parse_owners(owners: Vec<xml_response::ReportingOwner>, company_cik: i32)
-                        -> Result<(Vec<all_insiders::AllInsiders>, Vec<insider_roles::InsiderRoles>), anyhow::Error>
+                        -> Result<(Vec<i32>, Vec<all_insiders::AllInsiders>, Vec<insider_roles::InsiderRoles>), anyhow::Error>
         {
+            let mut insider_ciks = Vec::new();
             let mut insiders = Vec::new();
             let mut roles = Vec::new();
             
             for owner in owners {
+                insider_ciks.push(owner.info.insider_cik);
                 if all_insiders::AllInsiders::exists(owner.info.insider_cik)? == false {
                     insiders.push( all_insiders::AllInsiders{
                         insider_cik: owner.info.insider_cik,
@@ -105,7 +108,7 @@ impl Insider {
                 }
             }
             
-            Ok((insiders, roles))
+            Ok((insider_ciks, insiders, roles))
         }
         fn parse_derivatives(derivatives: Option<xml_response::DerivativeTable>)
             -> Result<(Vec<filings_data::DHolding>, Vec<filings_data::DTransaction>), anyhow::Error>
@@ -256,17 +259,17 @@ impl Insider {
         let parsed: xml_response::Response = quick_xml::de::from_slice(&response_slice)?;
 
         
-        let (insiders, roles) = parse_owners(parsed.reporting_owners, request_data.data.company_cik)?;
+        let (insider_ciks, insiders, roles) = parse_owners(parsed.reporting_owners, request_data.data.company_cik)?;
         let (d_holdings, d_transactions) = parse_derivatives(parsed.derivative_table)?;
         let (nd_holdings,nd_transactions) = parse_non_derivatives(parsed.non_derivative_table)?;
         let footnotes = parse_footnotes(parsed.footnotes)?;
 
-
-        let d_holdings: serde_json::Value = serde_json::to_value(&d_holdings)?;
-        let nd_holdings: serde_json::Value = serde_json::to_value(&nd_holdings)?;
-        let d_transactions: serde_json::Value = serde_json::to_value(&d_transactions)?;
-        let nd_transactions: serde_json::Value = serde_json::to_value(&nd_transactions)?;
-        let footnotes: serde_json::Value = serde_json::to_value(&footnotes)?;
+        let insider_ciks = serde_json::to_value(&insider_ciks)?;
+        let d_holdings = serde_json::to_value(&d_holdings)?;
+        let nd_holdings = serde_json::to_value(&nd_holdings)?;
+        let d_transactions = serde_json::to_value(&d_transactions)?;
+        let nd_transactions = serde_json::to_value(&nd_transactions)?;
+        let footnotes = serde_json::to_value(&footnotes)?;
 
         let documents_insert = filings_data::FilingsData {
             accession_number: request_data.data.accession_number,
@@ -281,7 +284,8 @@ impl Insider {
         filings_data::FilingsData::insert(documents_insert,
                                           insiders,
                                           roles,
-                                          request_data.data.accession_number)?;
+                                          request_data.data.accession_number,
+                                          insider_ciks)?;
         Ok(())
     }
 }

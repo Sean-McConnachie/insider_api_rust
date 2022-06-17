@@ -87,7 +87,8 @@ impl Insider {
                 form_link: None,
                 index_link: Some(entry.content.index_link),
                 form_type: entry.category.form_type,
-                fulfilled: false
+                fulfilled: false,
+                owner_ciks: None
             });
         }
 

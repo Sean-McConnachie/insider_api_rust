@@ -99,6 +99,7 @@ impl Insider {
             Err(e) => info!("Error running index: {:?}", e)
         }
 
+
         match self.run_xml().await {
             Ok(_) => warn!("Successfully ran xml."),
             Err(e) => info!("Error running xml: {:?}", e)

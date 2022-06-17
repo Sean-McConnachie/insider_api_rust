@@ -10,3 +10,4 @@ pub mod models;
 pub mod schema;
 mod settings;
 pub mod database_errors;
+mod parsing;

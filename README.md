@@ -59,17 +59,20 @@ The three main crates used in this project are:
   - `{company_ciks}`: `csv` of `company CIKS` which should be returned (alias = `company_cik`)
   - `{tickers}`: `csv` of `company tickers` which should be returned (alias = `ticker`)
   - `{exchanges}`: `csv` of `exchanges` which should be returned (alias = `exchange`)
-  - `{isin}`: `csv` of `ISIN`s which should be returned (alias = `exchange`)
+  - `{isins}`: `csv` of `ISIN`s which should be returned (alias = `isin`)
 ---
 - `/insiders/names`: Returns all insider CIKS and names
   - `{insider_ciks}`: `csv` of `insider CIKS` which should be returned (alias = `insider_cik`)
 - `/insiders/roles`: Returns all insiders and their roles in a company
   - `{insider_ciks}`: `csv` of `insider CIKS` which should be returned (alias = `insider_cik`)
-  - `{address}`: `bool` indicating if the address should be returned (default = `false`)
+  - `{company_ciks}`: `csv` of `company CIKS` which should be returned (alias = `company_cik`)
+  - `{director}`: `bool` indicating if the role is a director
+  - `{officer}`: `bool` indicating if the role is a director
+  - `{ten_percent}`: `bool` indicating if the role is a director
+  - `{other}`: `bool` indicating if the role is a director
 ---
 In general, `nd_transactions` is data most people will be looking for.
 - `/filings/metadata`: Returns all **metadata** for insider trades.
-  - `{ciks}`: `csv` of `insider CIKS` which should be returned (alias = `cik`)
   - `{accession_numbers}`: `csv` of `accession numbers` which should be returned (alias = `accession_number`)
   - `{insider_ciks}`: `csv` of `insider CIKS` which should be returned (alias = `insider_cik`)
   - `{company_ciks}`: `csv` of `company CIKS` which should be returned (alias = `company_cik`)
