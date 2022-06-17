@@ -5,16 +5,13 @@ extern crate log;
 extern crate core;
 
 use std;
-use std::convert::Infallible;
 use std::fs;
-use std::process::exit;
 use thiserror::Error;
 use tokio;
-use hyper::{Client, HeaderMap};
+use hyper::{Client};
 use hyper::client::HttpConnector;
 use hyper_tls::HttpsConnector;
 use serde_json;
-use callbacks::json_requests;
 use database_handler::database_errors::DbError;
 
 use database_handler::models::stock_data::StockData;

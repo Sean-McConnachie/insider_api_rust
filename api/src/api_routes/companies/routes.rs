@@ -1,6 +1,5 @@
-use actix_web::{get, HttpResponse, Responder, web};
+use actix_web::{get, HttpResponse, web};
 use actix_web::web::ServiceConfig;
-use serde::Deserialize;
 
 use database_handler::models::stock_data::{CompaniesParams, StockData};
 use crate::api_errors::ApiError;

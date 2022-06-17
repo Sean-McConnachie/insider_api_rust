@@ -1,7 +1,6 @@
-use std::any::Any;
 use diesel::dsl::any;
 use diesel::prelude::*;
-use serde::{Deserialize, Deserializer, Serialize};
+use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
 use crate::database;

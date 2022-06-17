@@ -1,23 +1,13 @@
-use std::fmt::{Debug, Error};
-use std::fs;
-use std::process::exit;
-use std::time::Instant;
+use std::fmt::{Debug};
 
 use anyhow;
-use async_trait::async_trait;
-use hyper::{Client, HeaderMap};
-use hyper::client::HttpConnector;
 use hyper::header::HOST;
-use hyper_tls::HttpsConnector;
 use quick_xml;
-use scraper::{Html, Selector};
-use serde::Serialize;
 
-use database_handler::database_errors::DbError;
-use database_handler::models::{all_filings, json_docs, stock_data, filings_data, all_insiders, insider_roles};
+use database_handler::models::{all_filings, filings_data, all_insiders, insider_roles};
 use request_handler::{QueueRequest, RequestData};
 
-use crate::{Insider, InsiderError};
+use crate::{Insider};
 use crate::CallbackError;
 use crate::models::xml_response;
 

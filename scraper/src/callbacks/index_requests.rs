@@ -1,27 +1,14 @@
 use std::fmt::Debug;
-use std::fs;
-use std::process::exit;
-use std::time::Instant;
 
 use anyhow;
-use async_trait::async_trait;
-use hyper::{Client, HeaderMap};
-use hyper::client::HttpConnector;
 use hyper::header::HOST;
-use hyper_tls::HttpsConnector;
-use quick_xml;
 use scraper::{Html, Selector};
-use thiserror::Error;
 
-use database_handler::database_errors::DbError;
-use database_handler::models::{all_filings, json_docs, stock_data};
+use database_handler::models::{all_filings};
 use request_handler::{QueueRequest, RequestData};
 
-use crate::{Insider, InsiderError};
+use crate::{Insider};
 use crate::CallbackError;
-use crate::models::json_response;
-use crate::models::other_models;
-use crate::models::rss_response;
 
 #[derive(Clone, Debug)]
 struct IndexReqData {

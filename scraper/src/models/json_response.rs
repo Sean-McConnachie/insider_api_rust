@@ -1,4 +1,3 @@
-use chrono::NaiveDate;
 use serde::{Deserialize};
 
 use crate::custom_de_serializers::accession_number;

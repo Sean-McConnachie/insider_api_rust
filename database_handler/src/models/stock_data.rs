@@ -1,13 +1,10 @@
-use diesel::{debug_query, sql_query};
 use diesel::dsl::any;
 use diesel::prelude::*;
-use diesel::types::Json;
 use serde::{Deserialize, Serialize};
 
 use crate::database;
 use crate::database_errors::DbError;
-use crate::models::json_docs::JsonDocs;
-use crate::schema::{json_docs, stock_data};
+use crate::schema::{stock_data};
 
 use crate::parsing::csv::{csv_to_type};
 

@@ -1,6 +1,6 @@
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
-use diesel::dsl::{not, sql};
+use diesel::dsl::sql;
 
 use crate::database;
 use crate::database_errors::DbError;

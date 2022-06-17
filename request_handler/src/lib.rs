@@ -1,9 +1,7 @@
 #[macro_use]
 extern crate log;
 
-use std::any::Any;
-use std::fmt::{Debug, Error};
-use std::ops::Deref;
+use std::fmt::{Debug};
 use async_trait::async_trait;
 use hyper;
 use hyper::body::HttpBody;
@@ -16,8 +14,6 @@ use tokio::time::{Instant, sleep_until, Duration};
 use futures::channel::oneshot;
 use futures::channel::oneshot::{Receiver, Sender};
 use futures::stream::{self, StreamExt};
-use hyper::header::HeaderName;
-use url::Url;
 use anyhow;
 
 pub type FetchErr = Box<dyn std::error::Error + Send + Sync>;
@@ -114,7 +110,6 @@ pub async fn fetch_buffer<T>(client: &Client<HttpsConnector<HttpConnector>>,
     for header in &request_data.headers {
         match header.0 {
             h => request.headers_mut().insert(h.clone(), header.1.clone()),
-            _ => return Err(RequestHandlerError::HeaderKeyErr("Missing header key.".to_string()))
         };
     };
 

@@ -1,6 +1,4 @@
-use diesel::pg::expression::array_comparison::All;
 use diesel::prelude::*;
-use diesel::pg::types::sql_types::Jsonb;
 use diesel::result::Error;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;

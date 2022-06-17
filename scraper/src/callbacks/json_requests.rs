@@ -1,24 +1,13 @@
 use std::fmt::Debug;
-use std::fs;
-use std::process::exit;
-use std::time::Instant;
 
-use async_trait::async_trait;
-use hyper::{Client, HeaderMap};
-use hyper::client::HttpConnector;
-use hyper_tls::HttpsConnector;
-use thiserror::Error;
 use anyhow;
-
-use database_handler::database_errors::DbError;
 use database_handler::models::all_filings::AllFilings;
 use database_handler::models::json_docs;
 use request_handler::{QueueRequest, RequestData};
 
-use crate::{Insider, InsiderError};
+use crate::{Insider};
 use crate::CallbackError;
 use crate::models::json_response;
-use crate::models::other_models;
 
 #[derive(Clone, Debug)]
 struct JsonReqData {

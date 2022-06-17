@@ -1,5 +1,4 @@
 use diesel::dsl::any;
-use diesel::pg::expression::array_comparison::All;
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
@@ -7,9 +6,8 @@ use serde_json::Value;
 use crate::database;
 use crate::database_errors::DbError;
 use crate::models::filings_data::FilingsData;
-use crate::schema::{all_filings, json_docs, stock_data, filings_data};
+use crate::schema::{all_filings, json_docs, filings_data};
 use crate::models::stock_data::StockData;
-use crate::models::json_docs::JsonDocs;
 use crate::parsing::csv::{convert_to_type, csv_to_type, date_option};
 
 #[derive(Identifiable, Serialize, Deserialize, Queryable, Associations, Insertable, Debug)]
@@ -273,7 +271,7 @@ impl TryFrom<FilingParams> for ParsedFilingParams {
 
             Some(TimeRange { start_date, end_date })
         } else if period_range_possible {
-            let mut period_range = params.period_range.unwrap();
+            let period_range = params.period_range.unwrap();
             let period_time = params.period_time.unwrap();
             let period_go_back = params.period_go_back;
 

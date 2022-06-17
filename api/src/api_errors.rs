@@ -3,7 +3,6 @@ use std::fmt;
 use actix_web::{HttpResponse, ResponseError};
 use actix_web::http::StatusCode;
 use serde::{Deserialize, Serialize};
-use serde_json::json;
 
 use database_handler::database_errors::DbError;
 

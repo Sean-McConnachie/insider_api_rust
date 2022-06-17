@@ -1,5 +1,4 @@
 use serde::{self, Deserialize, Deserializer};
-use serde::de::Error;
 
 
 pub fn deserialize<'de, D>(deserializer: D) -> Result<f32, D::Error>

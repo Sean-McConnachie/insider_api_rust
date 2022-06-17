@@ -1,4 +1,4 @@
-use actix_web::{get, HttpResponse, Responder, web};
+use actix_web::{get, HttpResponse, web};
 use actix_web::web::ServiceConfig;
 
 //use database_handler::models::User;
