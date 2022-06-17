@@ -9,5 +9,5 @@ CREATE TABLE "all_filings" (
     index_link VARCHAR DEFAULT NULL,
     form_type VARCHAR(1) NOT NULL,
     fulfilled BOOLEAN NOT NULL DEFAULT FALSE,
-    owner_ciks JSONB DEFAULT NULL
+    insider_ciks VARCHAR[] DEFAULT []
 );

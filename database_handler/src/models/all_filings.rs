@@ -1,3 +1,4 @@
+use diesel::dsl::any;
 use diesel::pg::expression::array_comparison::All;
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
@@ -5,7 +6,8 @@ use serde_json::Value;
 
 use crate::database;
 use crate::database_errors::DbError;
-use crate::schema::{all_filings, json_docs, stock_data};
+use crate::models::filings_data::FilingsData;
+use crate::schema::{all_filings, json_docs, stock_data, filings_data};
 use crate::models::stock_data::StockData;
 use crate::models::json_docs::JsonDocs;
 use crate::parsing::csv::{convert_to_type, csv_to_type, date_option};
@@ -25,7 +27,7 @@ pub struct AllFilings {
     pub index_link: Option<String>,
     pub form_type: String,
     pub fulfilled: bool,
-    pub owner_ciks: Option<Value>,
+    pub insider_ciks: Vec<i32>,
 }
 
 
@@ -43,7 +45,8 @@ pub struct AccessionForm {
 }
 
 impl AllFilings {
-    pub fn insert_update_transaction(data: Vec<Self>, company_cik: i32, old: bool) -> Result<(), DbError> {
+    pub fn insert_update_transaction(data: Vec<Self>, company_cik: i32, old: bool) -> Result<(), DbError>
+    {
         let conn = database::connection()?;
 
         conn.transaction::<_, diesel::result::Error, _>(|| {
@@ -62,7 +65,8 @@ impl AllFilings {
         Ok(())
     }
 
-    pub fn update_form_link(accession_number: i64, form_link: String) -> Result<(), DbError> {
+    pub fn update_form_link(accession_number: i64, form_link: String) -> Result<(), DbError>
+    {
         let conn = database::connection()?;
 
         diesel::update(all_filings::table)
@@ -73,7 +77,8 @@ impl AllFilings {
         Ok(())
     }
 
-    pub fn select_accession_numbers_by_cik(company_cik: i32) -> Result<Vec<i64>, DbError> {
+    pub fn select_accession_numbers_by_cik(company_cik: i32) -> Result<Vec<i64>, DbError>
+    {
         let conn = database::connection()?;
         let accession_numbers = all_filings::table
             .select(all_filings::accession_number)
@@ -82,7 +87,8 @@ impl AllFilings {
         Ok(accession_numbers)
     }
 
-    pub fn select_accession_index() -> Result<Vec<AccessionIndex>, DbError> {
+    pub fn select_accession_index() -> Result<Vec<AccessionIndex>, DbError>
+    {
         let conn = database::connection()?;
         let u = all_filings::table
             .select((all_filings::index_link,
@@ -94,7 +100,8 @@ impl AllFilings {
         Ok(u)
     }
 
-    pub fn select_accession_form() -> Result<Vec<AccessionForm>, DbError> {
+    pub fn select_accession_form() -> Result<Vec<AccessionForm>, DbError>
+    {
         let conn = database::connection()?;
         let u = all_filings::table
             .select((all_filings::form_link,
@@ -106,8 +113,93 @@ impl AllFilings {
         Ok(u)
     }
 
+    pub fn select_parameters_no_tables(params: ParsedFilingParams) -> Result<Value, DbError>
+    {
+        let conn = database::connection()?;
 
+        let mut query = all_filings::table.into_boxed();
+
+        if !params.accession_numbers.is_empty() {
+            query = query.filter(all_filings::accession_number.eq(any(params.accession_numbers)));
+        }
+        if !params.insider_ciks.is_empty() {
+            query = query.filter(all_filings::insider_ciks.overlaps_with(params.insider_ciks))
+
+        }
+        if !params.company_ciks.is_empty() {
+            query = query.filter(all_filings::company_cik.eq(any(params.company_ciks)))
+        }
+        if !params.form_types.is_empty() {
+            query = query.filter(all_filings::form_type.eq(any(params.form_types)))
+        }
+
+        // TODO: What time to sort by? Filing data, report date or acceptance datetime?
+        if params.time_range != None {
+            let time_range = params.time_range.unwrap();
+            if time_range.start_date != None {
+                query = query.filter(all_filings::acceptance_datetime
+                    .ge(time_range.start_date.unwrap()));
+            }
+            if time_range.end_date != None {
+                query = query.filter(all_filings::acceptance_datetime
+                    .le(time_range.end_date.unwrap()));
+            }
+        }
+
+
+        let r = query.load::<Self>(&conn)?;
+        Ok(serde_json::to_value(&r)?)
+    }
+
+    pub fn select_parameters_with_tables(params: ParsedFilingParams) -> Result<Value, DbError>
+    {
+        let conn = database::connection()?;
+
+        let mut query = all_filings::table
+            .inner_join(filings_data::table)
+            .into_boxed();
+
+        if !params.accession_numbers.is_empty() {
+            query = query.filter(all_filings::accession_number.eq(any(params.accession_numbers)));
+        }
+        if !params.insider_ciks.is_empty() {
+            query = query.filter(all_filings::insider_ciks.overlaps_with(params.insider_ciks))
+
+        }
+        if !params.company_ciks.is_empty() {
+            query = query.filter(all_filings::company_cik.eq(any(params.company_ciks)))
+        }
+        if !params.form_types.is_empty() {
+            query = query.filter(all_filings::form_type.eq(any(params.form_types)))
+        }
+
+        // TODO: What time to sort by? Filing data, report date or acceptance datetime?
+        if params.time_range != None {
+            let time_range = params.time_range.unwrap();
+            if time_range.start_date != None {
+                query = query.filter(all_filings::acceptance_datetime
+                    .ge(time_range.start_date.unwrap()));
+            }
+            if time_range.end_date != None {
+                query = query.filter(all_filings::acceptance_datetime
+                    .le(time_range.end_date.unwrap()));
+            }
+        }
+
+
+        let r = query.load::<AllFilingsData>(&conn)?;
+        Ok(serde_json::to_value(&r)?)
+    }
 }
+
+#[derive(Debug, Queryable, Serialize, Deserialize)]
+pub struct AllFilingsData {
+    #[serde(flatten)]
+    pub all_filings: AllFilings,
+    #[serde(flatten)]
+    pub filings_data: FilingsData
+}
+
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -235,7 +327,7 @@ impl TryFrom<FilingParams> for ParsedFilingParams {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct TimeRange {
     pub start_date: Option<i64>,
     pub end_date: Option<i64>,

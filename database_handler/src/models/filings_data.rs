@@ -91,7 +91,7 @@ impl FilingsData {
                   insider_documents: Vec<AllInsiders>,
                   roles_documents: Vec<InsiderRoles>,
                   accession_number: i64,
-                  owner_ciks: Value) -> Result<(), DbError> {
+                  owner_ciks: Vec<i32>) -> Result<(), DbError> {
         let conn = database::connection()?;
 
         conn.transaction::<_, Error, _>(|| {
@@ -112,7 +112,7 @@ impl FilingsData {
             diesel::update(all_filings::table)
                 .filter(all_filings::accession_number.eq(accession_number))
                 .set((all_filings::fulfilled.eq(true),
-                     all_filings::owner_ciks.eq(owner_ciks)))
+                     all_filings::insider_ciks.eq(owner_ciks)))
                 .execute(&conn)?;
 
             Ok(())

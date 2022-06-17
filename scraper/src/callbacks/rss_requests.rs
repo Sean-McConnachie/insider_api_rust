@@ -88,7 +88,7 @@ impl Insider {
                 index_link: Some(entry.content.index_link),
                 form_type: entry.category.form_type,
                 fulfilled: false,
-                owner_ciks: None
+                insider_ciks: vec![]
             });
         }
 

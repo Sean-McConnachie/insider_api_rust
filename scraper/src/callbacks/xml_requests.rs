@@ -264,7 +264,6 @@ impl Insider {
         let (nd_holdings,nd_transactions) = parse_non_derivatives(parsed.non_derivative_table)?;
         let footnotes = parse_footnotes(parsed.footnotes)?;
 
-        let insider_ciks = serde_json::to_value(&insider_ciks)?;
         let d_holdings = serde_json::to_value(&d_holdings)?;
         let nd_holdings = serde_json::to_value(&nd_holdings)?;
         let d_transactions = serde_json::to_value(&d_transactions)?;
