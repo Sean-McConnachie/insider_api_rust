@@ -122,7 +122,7 @@ async fn main() -> Result<(), InsiderError> {
     logger.init();
 
     let mut insider = Insider::init(config);
-    // insider.insert_default().expect("Failed to insert default records");
+    //insider.insert_default().expect("Failed to insert default records");
     insider.run().await?;
 
     Ok(())
