@@ -95,3 +95,5 @@ In general, `nd_transactions` is data most people will be looking for.
 - `period_range`: How far back/forward to look. Syntax is `< int >< d | w | m | y >`. Eg. `5d`. Extreme values can also be used - ie. `53w`
 - `period_time`: Specifies the **starting** point or **ending** point based on the parameter passed to `{period_go_back}`
 - `period_go_back`: `bool` (default = `true`). If `true`, values dating **back** from `{period_time}` are returned. Otherwise, values dating **forward** from `{period_time}` are returned.
+
+© 2022 Sean McConnachie. All rights reserved
