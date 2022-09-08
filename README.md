@@ -9,8 +9,8 @@ Currently, the two main sites for getting insider information are:
 
 There are also a few APIs, however, they are paid.
 
-This application is designed to gather all insider trades for any company specified in the `public.stockdata` table
-and provide a high-performance, free API to anyone using it in accordance with the license specified below.
+This application is designed to gather all-time insider trades for any company specified in the `public.stockdata` table
+and provide a high-performance API.
 
 ---
 
@@ -41,12 +41,45 @@ The three main crates used in this project are:
 
 ---
 
-## API
-### How to use the API
-1) Navigate to the **[`website`](http://localhost:8080/)** and login via Google
-2) Go to your account and create an app
-3) Store the token somewhere in your application
-4) Pass the token as a header parameter `{token}` in your request `REQUIRED!`
+## Where the data comes from
+Figuring out how to collect all the data through SEC was a ***pain*** to say the least. Their data is stored in a horrible manner.
+
+#### A) Collecting all-time filing links
+  1) For each company CIK in `stock_data` table:
+     1) Query `json` which contains the majority of filings with basic data and links to `.xml` documents
+     2) Store basic data in database
+     3) Store links to additional `json`s in database 
+  2) For each additional `json` link in database
+     1) Format is different to step one, but data is the same, however, from an earlier time
+     2) Store basic data in database
+
+**Note: Up until now, we do not have any useful information. Just basic dates, accession numbers and links to `.xml` files.**
+
+#### B) Collecting recent filing links (can be run every day)
+  1) Collect basic filing data for each company (max 20 filings) from RSS feed using company CIKs in `stock_data` table
+  2) Store basic data in database
+
+**Note: The links gathered from here are not actually links to `.xml` files. Instead, they are links to an `html` document, which contains the links to the `.xml` files that we want.**
+
+#### C) Getting the `.xml` files from step B
+  1) Open `html` links from step B
+  2) Parse the page
+  3) Find the wanted `.xml` link/file
+  4) Update associated filing in DB
+
+#### D) Finally collecting the useful filing data (i.e. money talk)
+
+  1) Open the `form_link` for each filing in `all_filings` table
+  2) Parse this monstrosity of a document
+  3) Store data in 4 more relational tables
+
+**Note: The data structure in the `xml` document is never the same. It changes based on what fields are present which
+makes parsing very difficult (especially since this is always-safe rust).**
+
+--
+
+This program also rate limits itself as SEC has a limit of around 10 requests per second (this program can do 70k
+requests/s when tested locally).
 
 ### Endpoints
 #### **[`Base URL`](http://localhost:8080/api/)**: `http://localhost:8080/api`
