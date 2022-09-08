@@ -71,7 +71,7 @@ Figuring out how to collect all the data through SEC was a ***pain*** to say the
 
   1) Open the `form_link` for each filing in `all_filings` table
   2) Parse this monstrosity of a document
-  3) Store data in 4 more relational tables
+  3) Store data in `filings_data` table
 
 **Note: The data structure in the `xml` document is never the same. It changes based on what fields are present which
 makes parsing very difficult (especially since this is always-safe rust).**
